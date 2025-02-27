@@ -51,14 +51,14 @@ pub async fn send_task(proof_of_task: String, task_definition_id: i32) -> Result
     let config = unsafe {
         CONFIG.as_ref().expect("Config is not initialized")
     };
-    let data = "hello";
+    let data = "hello"; // change this to whatever data you need
     let result = Bytes::from(data.as_bytes().to_vec());
 
     // let task_definition_id = 0;
 
     let decoded_key = hex::decode(&config.private_key).unwrap();
     let signing_key = SigningKey::from_bytes(GenericArray::from_slice(&decoded_key)).unwrap();
-    let signer = PrivateKeySigner::from_signing_key(signing_key);
+    let signer = PrivateKeySigner::fromf_signing_key(signing_key);
 
     let performer_address = signer.address();
 
