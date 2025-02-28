@@ -8,10 +8,10 @@ use std::{env, fs::File, io::Read};
 use base64::{Engine as _, engine::general_purpose};
 use clap::{Args, Parser, Subcommand};
 use eyre::Result;
-
+use tokio;
 use std::path::PathBuf;
 use dotenv::dotenv;
-use std::collectionpin_datas::HashMap;
+use std::collections::HashMap;
 use futures::executor::block_on;
 
 
@@ -41,7 +41,11 @@ struct ProcessImageArgs {
     keys: PathBuf,
 
     /// Path to the image
-    image: PathBuf
+    image: PathBuf,
+    
+    /// URL for the ExecutionService
+    #[arg(long, default_value = "http://localhost:4003")]
+    execution_url: String
 }
 
 #[derive(Args)]
@@ -58,7 +62,8 @@ struct DecryptImageArgs {
     save_path: PathBuf
 }
 
-fn main() -> Result<()>{
+#[tokio::main]
+async fn main() -> Result<()>{
     let cli = Cli::parse();
 
     match &cli.command {
@@ -66,7 +71,7 @@ fn main() -> Result<()>{
             generate_keys()?;
         }
         Commands::ProcessImage(args) => {
-            process_image(&args.keys, &args.image)?;
+            process_image(&args.keys, &args.image, &args.execution_url).await?;
         }
         Commands::DecryptImage(args) => {
             decrypt_image(&args.keys, &args.encrypted_image, &args.save_path)?;
@@ -86,25 +91,27 @@ fn generate_keys() -> Result<()>{
     Ok(())
 }
 
-fn process_image(keys_path: &PathBuf, image: &PathBuf) -> Result<()>{
+async fn process_image(keys_path: &PathBuf, image: &PathBuf, execution_service: &String) -> Result<()>{
+    dotenv().ok();
     let keys = cryptography::Keys::load(keys_path.to_string_lossy().to_string())?; 
     let image_arr = images::load_image(image.to_string_lossy().to_string())?;
 
     let enc = keys.enc_array(image_arr);
     let b64 = cryptography::encode_enc_image(enc)?;
 
-    println!("{}", b64);
     let public_key = env::var("PINATA_API_KEY")?;
     let secret_key = env::var("PINATA_SECRET_API_KEY")?;
 
-    let pinata = pinata_sdk::PinataApi::new(public_key, secret_key)?;
+    let pinata = pinata_sdk::PinataApi::new(public_key, secret_key).unwrap();
 
     let mut json_data = HashMap::new();
     json_data.insert("image", b64);
 
-    let res = block_on(pinata.pin_json(PinByJson::new(json_data)))?;
+    let res = pinata.pin_json(PinByJson::new(json_data)).await.unwrap();
 
-    // send b64 to task operator
+    reqwest::get(format!("{}/execute/{}", execution_service, res.ipfs_hash)).await?;
+
+    println!("Task created");
 
 
     Ok(())
