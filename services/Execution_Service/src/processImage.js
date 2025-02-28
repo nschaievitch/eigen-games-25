@@ -1,10 +1,10 @@
 require('dotenv').config();
 const axios = require("axios");
-const { exec } = require("child_process")
+const { execSync } = require("child_process")
 
 
 async function processImage() {
-  exec("./operator-lib")
+  execSync("./operator-lib")
 }
   
   module.exports = {

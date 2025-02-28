@@ -3,7 +3,7 @@ const axios = require("axios");
 const pinataSDK = require("@pinata/sdk");
 const { ethers, AbiCoder } = require('ethers');
 const { get } = require('../configs/app.config');
-
+const ipfsHost = "https://othentic.mypinata.cloud/ipfs/"
 var pinataApiKey='';
 var pinataSecretApiKey='';
 var rpcBaseAddress='';

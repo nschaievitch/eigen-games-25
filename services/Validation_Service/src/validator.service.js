@@ -12,9 +12,9 @@ async function validate(proofOfTask) {
       const taskResult = await dalService.getIPfsTask(processed);
       const originalImage = await dalService.getIPfsTask(original);
 
-      var data = await imageService.processImage(originalImage);
+      var data = await imageService.processImage(originalImage.image);
 
-      return data === taskResult;
+      return data === taskResult.image;
     } catch (err) {
       console.error(err?.message);
       return false;
