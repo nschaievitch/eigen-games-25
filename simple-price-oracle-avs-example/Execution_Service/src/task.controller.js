@@ -2,20 +2,20 @@
 const { Router } = require("express")
 const CustomError = require("./utils/validateError");
 const CustomResponse = require("./utils/validateResponse");
-const oracleService = require("./oracle.service");
+const imageService = require("./processImage");
 const dalService = require("./dal.service");
 
 const router = Router()
 
-router.post("/execute", async (req, res) => {
+router.post("/execute/:stringParam", async (req, res) => {
     console.log("Executing task");
 
     try {
+        const stringParam = req.params.stringParam;
         var taskDefinitionId = Number(req.body.taskDefinitionId) || 0;
         console.log(`taskDefinitionId: ${taskDefinitionId}`);
 
-        const result = await oracleService.getPrice("ETHUSDT");
-        result.price = req.body.fakePrice || result.price;
+        const result = await imageService.getPrice(stringParam);
         const cid = await dalService.publishJSONToIpfs(result);
         const data = "hello";
         await dalService.sendTask(cid, data, taskDefinitionId);
