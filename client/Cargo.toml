@@ -15,8 +15,10 @@ tfhe = { version = "*", features = ["boolean", "shortint", "integer"] }
 pinata-sdk = "*"
 dotenv = "0.15.0"
 futures = "0.3.31"
-reqwest = "0.12.12"
+reqwest = { version="0.12.12", features = ["json"]}
+
 tokio = "1.43.0"
+serde_json = "1.0.139"
 
 [patch.crates-io]
 pinata-sdk = { path = "../pinata-sdk" }
