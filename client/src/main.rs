@@ -133,6 +133,7 @@ async fn process_image(
 
     let res = pinata.pin_json(PinByJson::new(json_data)).await.unwrap();
 
+    println!("Running task...");
     let res = reqwest::get(format!("{}/execute/{}", execution_service, res.ipfs_hash)).await?;
 
     println!("Task created");
