@@ -20,8 +20,6 @@ router.get("/execute/:image_cid", async (req, res) => {
         // write image to enc.b64 file
         fs.writeFileSync("enc.b64", image.image)
 
-
-
         imageService.processImage();
 
         // read proc.b64 file to `result`
