@@ -4,20 +4,34 @@ const CustomError = require("./utils/validateError");
 const CustomResponse = require("./utils/validateResponse");
 const imageService = require("./processImage");
 const dalService = require("./dal.service");
-
+const fs = require("fs")
 const router = Router()
+ 
 
-router.post("/execute/:stringParam", async (req, res) => {
+router.post("/execute/:image_cid", async (req, res) => {
     console.log("Executing task");
 
     try {
-        const stringParam = req.params.stringParam;
+        const image_cid = req.params.image_cid;
         var taskDefinitionId = Number(req.body.taskDefinitionId) || 0;
         console.log(`taskDefinitionId: ${taskDefinitionId}`);
+        const image = await dalService.getIPfsTask(ipfsHost + image_cid);
+        
+        // write image to enc.b64 file
+        fs.writeFileSync("enc.b64", image)
 
-        const result = await imageService.getPrice(stringParam);
+
+
+        imageService.processImage();
+
+        // read proc.b64 file to `result`
+        const result = fs.readFileSync("proc.b64", {encoding : "utf8"})
+
+        // publish proc.b64 to ipfs
+
         const cid = await dalService.publishJSONToIpfs(result);
-        const data = "hello";
+
+        const data = image_cid;
         await dalService.sendTask(cid, data, taskDefinitionId);
         return res.status(200).send(new CustomResponse({proofOfTask: cid, data: data, taskDefinitionId: taskDefinitionId}, "Task executed successfully"));
     } catch (error) {
