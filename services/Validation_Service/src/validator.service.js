@@ -5,7 +5,7 @@ const imageService = require("./processImage");
 async function validate(proofOfTask) {
 
   try {
-      const proofData = JSON.parse();
+      const proofData = JSON.parse(proofOfTask);
       const processed = proofData.processed;
       const original = proofData.original;
 
