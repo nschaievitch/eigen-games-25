@@ -29,11 +29,15 @@ router.post("/execute/:image_cid", async (req, res) => {
 
         // publish proc.b64 to ipfs
 
-        const cid = await dalService.publishJSONToIpfs(result);
+        const cid = await dalService.publishJSONToIpfs({image: result});
+        const proof_of_task = JSON.stringify({
+            processed: cid,
+            original: image_cid
+        })
 
-        const data = image_cid;
-        await dalService.sendTask(cid, data, taskDefinitionId);
-        return res.status(200).send(new CustomResponse({proofOfTask: cid, data: data, taskDefinitionId: taskDefinitionId}, "Task executed successfully"));
+        const data = "";
+        await dalService.sendTask(proof_of_task, data, taskDefinitionId);
+        return res.status(200).send(new CustomResponse({proofOfTask: proof_of_task, data: data, taskDefinitionId: taskDefinitionId}, "Task executed successfully"));
     } catch (error) {
         console.log(error)
         return res.status(500).send(new CustomError("Something went wrong", {}));
