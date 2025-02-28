@@ -1,19 +1,20 @@
 require('dotenv').config();
 const dalService = require("./dal.service");
-const oracleService = require("./oracle.service");
+const imageService = require("./processImage");
 
 async function validate(proofOfTask) {
 
   try {
-      const taskResult = await dalService.getIPfsTask(proofOfTask);
-      var data = await oracleService.getPrice("ETHUSDT");
-      const upperBound = data.price * 1.05;
-      const lowerBound = data.price * 0.95;
-      let isApproved = true;
-      if (taskResult.price > upperBound || taskResult.price < lowerBound) {
-        isApproved = false;
-      }
-      return isApproved;
+      const proofData = JSON.parse();
+      const processed = proofData.processed;
+      const original = proofData.original;
+
+      const taskResult = await dalService.getIPfsTask(processed);
+      const originalImage = await dalService.getIPfsTask(original);
+
+      var data = await imageService.processImage(originalImage);
+
+      return data === taskResult;
     } catch (err) {
       console.error(err?.message);
       return false;

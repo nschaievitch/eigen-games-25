@@ -1,6 +1,7 @@
 require('dotenv').config();
 const pinataSDK = require("@pinata/sdk");
 const { ethers, AbiCoder } = require('ethers');
+const { get } = require('../configs/app.config');
 
 var pinataApiKey='';
 var pinataSecretApiKey='';
@@ -60,8 +61,16 @@ async function publishJSONToIpfs(data) {
   return proofOfTask;
 }
 
+async function getIPfsTask(cid) {
+    const { data } = await axios.get(ipfsHost + cid);
+    return {
+        image: data.image,
+    };
+}
+
 module.exports = {
   init,
   publishJSONToIpfs,
-  sendTask
+  sendTask,
+  getIPfsTask
 }
