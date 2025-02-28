@@ -1,12 +1,8 @@
----
-title: Secure Image Editing
-author: Nicolas Schaievitch and Kishan Sreenivasan
-date: Eigen Games 2025
-theme: Rochester
-colortheme: crane
----
-
 # Secure Image Editing
+
+## Documentation
+
+For information on how the project works and building/running details, see our [documentation](./Docs.md).
 
 ## Motivation
 
