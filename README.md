@@ -28,6 +28,7 @@ We are leveraging FHE (Full Homomorphic Encryption) and the Othentic stack to al
 - We use Zama's TFHE-rs library for the homomorphic encryption
 - We use Rust for the client and for the server logic, with a JS layer to handle the validation/execution services
 - We use Othentic to develop and deploy our AVS
+- We implement a convolution-based image sharpening algorithm
 
 ## Limitations
 
@@ -36,5 +37,6 @@ We are leveraging FHE (Full Homomorphic Encryption) and the Othentic stack to al
 
 ## Future improvements
 
+- This same workflow could be used for more complicated tasks, such as object recognition
 - Currently, our client is a CLI. In the future, we'd like to compile this to WASM to run on a frontend
 - It's expensive to have every validator re-run the FHE computation. Ideally, some other proof of computation could be provided, such as a ZK proof or some probabilistic method.
