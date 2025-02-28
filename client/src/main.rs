@@ -47,8 +47,8 @@ struct ProcessImageArgs {
     image: PathBuf,
 
     /// URL for the ExecutionService
-    #[arg(long, default_value = "http://localhost:4003")]
-    execution_url: String,
+    #[arg(long, default_value = "http://localhost:4003/task")]
+    execution_url: String
 }
 
 #[derive(Args)]
