@@ -2,12 +2,19 @@ mod cryptography;
 mod images;
 use image::{GenericImageView, imageops::FilterType};
 use images::save_image;
+use pinata_sdk::PinByJson;
+use tfhe::boolean::backward_compatibility::public_key;
 use std::{env, fs::File, io::Read};
 use base64::{Engine as _, engine::general_purpose};
 use clap::{Args, Parser, Subcommand};
 use eyre::Result;
 
 use std::path::PathBuf;
+use dotenv::dotenv;
+use std::collectionpin_datas::HashMap;
+use futures::executor::block_on;
+
+
 
 #[derive(Parser)]
 struct Cli {
@@ -87,6 +94,16 @@ fn process_image(keys_path: &PathBuf, image: &PathBuf) -> Result<()>{
     let b64 = cryptography::encode_enc_image(enc)?;
 
     println!("{}", b64);
+    let public_key = env::var("PINATA_API_KEY")?;
+    let secret_key = env::var("PINATA_SECRET_API_KEY")?;
+
+    let pinata = pinata_sdk::PinataApi::new(public_key, secret_key)?;
+
+    let mut json_data = HashMap::new();
+    json_data.insert("image", b64);
+
+    let res = block_on(pinata.pin_json(PinByJson::new(json_data)))?;
+
     // send b64 to task operator
 
 

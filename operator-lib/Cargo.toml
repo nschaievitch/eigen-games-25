@@ -1,21 +1,13 @@
 [package]
-name = "client"
+name = "operator-lib"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 base64 = "0.22.1"
 bincode = "1.3.3"
-clap = { version = "4.5.31", features = ["derive"] }
 eyre = "0.6.12"
-image = "0.25.5"
 itertools = "0.14.0"
 regex = "1.11.1"
+serde = "1.0.218"
 tfhe = { version = "*", features = ["boolean", "shortint", "integer"] }
-pinata-sdk = "*"
-dotenv = "0.15.0"
-futures = "0.3.31"
-reqwest = "0.12.12"
-
-[patch.crates-io]
-pinata-sdk = { path = "../pinata-sdk" }
