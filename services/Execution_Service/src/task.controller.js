@@ -6,9 +6,9 @@ const imageService = require("./processImage");
 const dalService = require("./dal.service");
 const fs = require("fs")
 const router = Router()
- 
+const ipfsHost = "https://othentic.mypinata.cloud/ipfs/"
 
-router.post("/execute/:image_cid", async (req, res) => {
+router.get("/execute/:image_cid", async (req, res) => {
     console.log("Executing task");
 
     try {

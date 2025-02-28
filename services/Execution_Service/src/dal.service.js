@@ -1,4 +1,5 @@
 require('dotenv').config();
+const axios = require("axios");
 const pinataSDK = require("@pinata/sdk");
 const { ethers, AbiCoder } = require('ethers');
 const { get } = require('../configs/app.config');
